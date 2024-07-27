@@ -18,10 +18,6 @@ QEMUFLAGS = -debugcon stdio -m 256M -cdrom bin/upOS.iso -boot d
 # Output image name
 IMAGE_NAME = upOS
 
-test:
-	@echo $(KERNEL_C_SOURCES)
-	@echo $(KERNEL_OBJS)
-
 all: dirs boot kernel iso
 
 run: all

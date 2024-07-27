@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "vga.h": "c",
+        "stdint.h": "c",
+        "serial.h": "c",
+        "chrono": "c",
+        "variant": "c"
+    }
+}
