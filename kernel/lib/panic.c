@@ -2,6 +2,9 @@
 #include <drivers/vga.h>
 #include <lib/printf.h>
 
+/*
+ * panic - panics.
+ */
 void panic(const char *fmt, ...) {
     vga_puts("panic: ");
 

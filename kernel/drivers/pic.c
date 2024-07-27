@@ -22,6 +22,9 @@
 
 #define PIC_EOI         0x20        /* End of interrupt */
 
+/*
+ * pic_install - sets up the two programmable interrupt controllers in cascade mode
+ */
 void pic_install(void) {
     outb(PIC1_CMD, ICW1_INIT | ICW1_ICW4);
     outb(PIC2_CMD, ICW1_INIT | ICW1_ICW4);
@@ -38,6 +41,9 @@ void pic_install(void) {
     dprintf("pic_install: initialized PIC\n");
 }
 
+/*
+ * pic_eoi - sends the EOI command to the PIC
+ */
 void pic_eoi(uint8_t no) {
     if (no >= 8) {
         outb(PIC2, PIC_EOI);

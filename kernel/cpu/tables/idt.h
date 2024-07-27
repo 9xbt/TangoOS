@@ -36,5 +36,7 @@ struct registers {
 
 void idt_install(void);
 void idt_set_entry(uint8_t index, uint32_t base, uint16_t selector, uint8_t type);
+void irq_register(uint8_t vector, void *handler);
+void irq_unregister(uint8_t vector);
 
 #endif

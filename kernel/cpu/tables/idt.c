@@ -42,6 +42,9 @@ const char* isr_errors[32] = {
     "reserved"
 };
 
+/*
+ * idt_install - sets up the IDT
+ */
 void idt_install(void) {
     for (uint16_t i = 0; i < 256; i++) {
         idt_set_entry(i, (uint32_t)idt_int_table[i], 0x08, 0x8E);
@@ -58,6 +61,9 @@ void idt_install(void) {
     dprintf("idt_install: initialized IDT\n");
 }
 
+/*
+ * idt_set_entry - sets an entry in the IDT
+ */
 void idt_set_entry(uint8_t index, uint32_t base, uint16_t selector, uint8_t type) {
     idt_entries[index].base_low = base & 0xFFFF;
     idt_entries[index].selector = selector;
@@ -66,6 +72,23 @@ void idt_set_entry(uint8_t index, uint32_t base, uint16_t selector, uint8_t type
     idt_entries[index].base_high = (base >> 16) & 0xFF;
 }
 
+/*
+ * irq_register - registers irq.
+ */
+void irq_register(uint8_t vector, void *handler) {
+    irq_handlers[vector] = handler;
+}
+
+/*
+ * irq_unregister - unregisters irq.
+ */
+void irq_unregister(uint8_t vector) {
+    irq_handlers[vector] = (void *)0;
+}
+
+/*
+ * isr_handler - handles isr.
+ */
 void isr_handler(struct registers r) {
     if (r.int_no == 0xff) {
         return; /* spurious interrupt */ 
@@ -76,10 +99,13 @@ void isr_handler(struct registers r) {
     for (;;) asm volatile ("hlt");
 }
 
+/*
+ * irq_handler - handles irq.
+ */
 void irq_handler(struct registers r) {
     void(*handler)(struct registers);
     handler = irq_handlers[r.int_no - 32];
 
-    if (handler != (void*)0)
+    if (handler != (void *)0)
         handler(r);
 }

@@ -9,6 +9,9 @@ char printf_buf[1024] = {-1};
 int printf_ptr = 0;
 bool auxiliary_output = false;
 
+/*
+ * parse_num - parses a decimal number
+ */
 void parse_num(uint32_t val, uint32_t base) {
     uint32_t n = val / base;
     int r = val % base;
@@ -22,6 +25,9 @@ void parse_num(uint32_t val, uint32_t base) {
     printf_buf[printf_ptr++] = (r + '0');
 }
 
+/*
+ * parse_hex - parses hex
+ */
 void parse_hex(uint32_t val) {
     int i = 8;
     while (i-- > 0) {
@@ -29,6 +35,9 @@ void parse_hex(uint32_t val) {
     }
 }
 
+/*
+ * vprintf - prints format to buffer
+ */
 int vprintf(const char *fmt, va_list args) {
     memset(printf_buf, 0, 1024);
     printf_ptr = 0;
@@ -62,6 +71,9 @@ int vprintf(const char *fmt, va_list args) {
     return 0;
 }
 
+/*
+ * printf - prints format to VGA console
+ */
 int printf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
@@ -72,6 +84,9 @@ int printf(const char *fmt, ...) {
     return ret;
 }
 
+/*
+ * dprintf - debug printf, prints format to QEMU debugcon console
+ */
 int dprintf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);

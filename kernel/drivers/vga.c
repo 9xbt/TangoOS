@@ -5,18 +5,24 @@
 #include <cpu/io.h>
 #include <stdint.h>
 
+static uint8_t ansi_to_vga[] = { 0, 4, 2, 6, 1, 5, 3, 7 };
+
 uint8_t vga_x = 0;
 uint8_t vga_y = 0;
 uint8_t vga_color = 0x07;
 uint16_t *vga_buffer = (uint16_t *)0xB8000;
 
-uint8_t ansi_to_vga[] = { 0, 4, 2, 6, 1, 5, 3, 7 };
-
+/*
+ * vga_clear - clears the VGA console
+ */
 void vga_clear(void) {
     for (int i = 0; i < 80 * 25; i++)
         vga_buffer[i] = vga_color << 8;
 }
 
+/*
+ * ansi_color_parse - parses an ANSI escape sequence color
+ */
 void ansi_color_parse(const char* code) {
     switch (*code) {
         case '0': vga_color = 0x07; break; /* reset */
@@ -27,6 +33,10 @@ void ansi_color_parse(const char* code) {
     }
 }
 
+/*
+ * vga_puts - prints a string to the VGA console
+ * supports: text, ansi escape codes
+ */
 void vga_puts(const char* str) {
     while (*str) {
         /* simple ANSI implementation (only colors for now) */
@@ -58,6 +68,9 @@ void vga_puts(const char* str) {
     }
 }
 
+/*
+ * vga_putchar - prints a character to the VGA console
+ */
 void vga_putchar(const char c) {
     switch (c) {
         case '\n':
@@ -91,6 +104,9 @@ void vga_putchar(const char c) {
     vga_update_cursor();
 }
 
+/*
+ * vga_scroll - scrolls the VGA console
+ */
 void vga_scroll(void) {
     for (int i = 0; i < 80 * 24 * 2; i += 2)
         *(uint16_t *)(0xB8000 + i) = *(uint16_t *)(0xB8000 + i + 160);
@@ -100,6 +116,9 @@ void vga_scroll(void) {
     vga_y--;
 }
 
+/*
+ * vga_enable_cursor - enables the VGA hardware cursor
+ */
 void vga_enable_cursor(void) {
     outb(0x3D4, 0x0A);
     outb(0x3D5, (inb(0x3D5) & 0xC0) | 14);
@@ -107,11 +126,17 @@ void vga_enable_cursor(void) {
     outb(0x3D5, (inb(0x3D5) & 0xE0) | 15);
 }
 
+/*
+ * vga_disable_cursor - disables the VGA hardware cursor
+ */
 void vga_disable_cursor(void) {
     outb(0x3D4, 0x0A);
     outb(0x3D5, 0x20);
 }
 
+/*
+ * vga_update_cursor - update the VGA hardware cursor position
+ */
 void vga_update_cursor(void) {
 	uint16_t pos = vga_y * 80 + vga_x;
  
