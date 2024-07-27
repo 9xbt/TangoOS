@@ -58,5 +58,4 @@ void printf(const char *fmt, ...) {
     }
 
     va_end(args);
-    vga_puts(printf_buf);
 }

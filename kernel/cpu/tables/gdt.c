@@ -16,7 +16,7 @@ void gdt_install(void) {
 
     asm volatile ("lgdt %0" :: "m"(gdt_descriptor) : "memory");
     
-    serial_puts("gdt_install: initialized GDT");
+    dprintf("gdt_install: initialized GDT");
 }
 
 void gdt_set_entry(uint8_t index, uint16_t limit, uint32_t base, uint8_t access, uint8_t gran) {
