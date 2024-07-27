@@ -46,16 +46,16 @@ void idt_install(void) {
     for (uint16_t i = 0; i < 256; i++) {
         idt_set_entry(i, (uint32_t)idt_int_table[i], 0x08, 0x8E);
     }
-    dprintf("idt_install: successfully populated 256 entries\n");
 
     idt_descriptor = (struct idtr) {
         .size = sizeof(struct idt_entry) * 256 - 1,
         .offset = (uint32_t)idt_entries
     };
-    dprintf("idt_install: idt descriptor located at 0x%x\n", (uint32_t)&idt_descriptor);
 
     asm volatile ("lidt %0" :: "m"(idt_descriptor));
     asm volatile ("sti");
+
+    dprintf("idt_install: initialized IDT\n");
 }
 
 void idt_set_entry(uint8_t index, uint32_t base, uint16_t selector, uint8_t type) {

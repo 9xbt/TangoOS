@@ -1,12 +1,18 @@
+#include <lib/printf.h>
+#include <lib/panic.h>
+#include <lib/multiboot.h>
 #include <sys/version.h>
 #include <drivers/vga.h>
-#include <lib/panic.h>
-#include <lib/printf.h>
-#include <lib/multiboot.h>
+#include <drivers/pic.h>
 #include <cpu/tables/gdt.h>
 #include <cpu/tables/idt.h>
 
+#define BLINDMODE
+
 void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
+    #ifdef BLINDMODE
+    vga_puts("\033[107m\033[30m");
+    #endif
     vga_clear();
     vga_enable_cursor();
 
@@ -16,7 +22,10 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
 
     gdt_install();
     idt_install();
+    pic_install();
 
-    printf("Welcome to tangoOS v%d.%d (%s %s %s %s)!\n\n", __kernel_version_major, __kernel_version_minor, __kernel_name, __kernel_build_date, __kernel_build_time, __kernel_arch);
-    vga_puts("\033[0;34mA");
+    printf("Welcome to \033[96mtangoOS\033[30m!\n%s %d.%d %s %s %s\n\n",
+        __kernel_name, __kernel_version_major,__kernel_version_minor,
+        __kernel_build_date, __kernel_build_time, __kernel_arch);
+    printf("\033[46mHello world\033[0;30m");
 }

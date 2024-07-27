@@ -1,5 +1,5 @@
-#ifndef __LIBC_H
-#define __LIBC_H
+#ifndef LIBC_H
+#define LIBC_H
 
 #include <stdint.h>
 #include <stddef.h>

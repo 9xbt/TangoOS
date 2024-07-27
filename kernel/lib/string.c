@@ -24,7 +24,5 @@ void str_shift_left(char *str, const int shift) {
 }
 
 uint8_t char_to_int(const char c) {
-    if (c > 57) return 9; 
-    if (c < 48) return 0;
-    return c-48;
+    return c - '0';
 }

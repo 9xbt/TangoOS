@@ -17,7 +17,6 @@ void gdt_install(void) {
     };
 
     gdt_load();
-    
     dprintf("gdt_install: initialized GDT\n");
 }
 

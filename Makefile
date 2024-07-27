@@ -12,11 +12,11 @@ KERNEL_OBJS := $(addprefix bin/kernel/, $(KERNEL_S_SOURCES:.S=.S.o) $(KERNEL_C_S
 
 # Flags
 ASFLAGS = -f elf32 -Wall -g -F dwarf
-CCFLAGS = -m32 -std=gnu11 -ffreestanding -O0 -Wall -Wextra -nostdlib -I kernel -fno-stack-protector
-QEMUFLAGS = -debugcon stdio -m 256M -cdrom bin/upOS.iso -boot d
+CCFLAGS = -m32 -std=gnu11 -ffreestanding -O0 -Wall -Wextra -nostdlib -I kernel -fno-stack-protector -Wno-unused-parameter
+QEMUFLAGS = -debugcon stdio -m 256M -cdrom bin/tangoOS.iso -boot d
 
 # Output image name
-IMAGE_NAME = upOS
+IMAGE_NAME = tangoOS
 
 all: dirs boot kernel iso
 
@@ -57,7 +57,7 @@ iso:
 	mkdir -p iso_root/boot/grub/
 	cp bin/kernel.elf iso_root/boot/kernel.elf
 	cp boot/grub.cfg iso_root/boot/grub/grub.cfg
-	grub-mkrescue -o bin/upOS.iso iso_root/
+	grub-mkrescue -o bin/tangoOS.iso iso_root/
 	rm -rf iso_root/
 
 clean:
