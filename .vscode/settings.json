@@ -4,6 +4,7 @@
         "stdint.h": "c",
         "serial.h": "c",
         "chrono": "c",
-        "variant": "c"
+        "variant": "c",
+        "charconv": "c"
     }
 }

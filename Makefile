@@ -12,7 +12,7 @@ KERNEL_OBJS := $(addprefix bin/kernel/, $(KERNEL_S_SOURCES:.S=.S.o) $(KERNEL_C_S
 
 # Flags
 ASFLAGS = -f elf32 -Wall -g -F dwarf
-CCFLAGS = -m32 -std=gnu11 -ffreestanding -O0 -Wall -Wextra -nostdlib -I kernel
+CCFLAGS = -m32 -std=gnu11 -ffreestanding -O0 -Wall -Wextra -nostdlib -I kernel -fno-stack-protector
 QEMUFLAGS = -debugcon stdio -m 256M -cdrom bin/upOS.iso -boot d
 
 # Output image name
