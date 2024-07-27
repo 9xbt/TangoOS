@@ -1,5 +1,5 @@
 #include <cpu/tables/gdt.h>
-#include <libs/printf.h>
+#include <lib/printf.h>
 
 struct gdt_entry gdt_entries[3];
 struct gdtr gdt_descriptor;

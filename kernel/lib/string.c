@@ -1,5 +1,5 @@
 #include <stdbool.h>
-#include <libs/string.h>
+#include <lib/string.h>
 
 bool str_contains_char(const char* s, const char c) {
     while (*s) {
@@ -10,7 +10,7 @@ bool str_contains_char(const char* s, const char c) {
     return false;
 }
 
-void str_shift_left(char *str, int shift) {
+void str_shift_left(char *str, const int shift) {
     int i = 0;
     
     // Move the pointer `shift` positions to the left
@@ -21,4 +21,10 @@ void str_shift_left(char *str, int shift) {
     
     // Null-terminate the new string
     str[i] = '\0';
+}
+
+uint8_t char_to_int(const char c) {
+    if (c > 57) return 9; 
+    if (c < 48) return 0;
+    return c-48;
 }

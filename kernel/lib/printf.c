@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <libs/libc.h>
+#include <lib/libc.h>
 #include <drivers/vga.h>
 #include <drivers/serial.h>
 

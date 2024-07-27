@@ -1,12 +1,15 @@
 #include <stdint.h>
 #include <drivers/vga.h>
-#include <libs/string.h>
+#include <lib/string.h>
 #include <cpu/io.h>
+#include <stdint.h>
 
 uint8_t vga_x = 0;
 uint8_t vga_y = 0;
 uint8_t vga_color = 0x07;
 uint16_t *vga_buffer = (uint16_t *)0xB8000;
+
+uint8_t ansi_to_vga[] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
 void vga_clear(void) {
     int i = 0;
@@ -15,12 +18,22 @@ void vga_clear(void) {
     }
 }
 
+void ansi_color_parse(const char* code) {
+    switch (*code) {
+        case '0': vga_color = 0x07; break; /* reset */
+        case '3': vga_color = (vga_color & 0xF0) | ansi_to_vga[char_to_int(*(code+1))]; break; /* foreground */
+        case '4': break; /* background */
+        case '9': break; /* high intensity foreground */
+        case '1': break; /* high intensity background */
+    }
+}
+
 void vga_puts(const char* str) {
     while (*str) {
-        // simple ANSI impl (only colors for now)
+        /* simple ANSI implementation (only colors for now) */
         if (*str == '\033' && *(str+1) == '[') {
             int ansi_end;
-            char code[16] = {0}; // a buffer to hold the ANSI code
+            char code[16] = {0}; /* a buffer to hold the ANSI code */
             int code_index = 0;
 
             for (int i = 2; ; i++) {
@@ -33,30 +46,16 @@ void vga_puts(const char* str) {
                 }
             }
 
-            code[code_index] = '\0'; // null-terminate the code string
+            code[code_index] = '\0'; /* null-terminate the code string */
 
             if (str_contains_char(code,';'))
                 str_shift_left(code, 2);
 
-            // Assuming vga_putchar is just for debugging to see the code
-            for (int i = 0; code[i] != '\0'; i++) {
-                vga_color = (0x4 << 4) | 0x9;
-                vga_putchar(code[i]);
-            }
+            ansi_color_parse(code);
 
-            str += ansi_end + 1; // skip the ANSI sequence including 'm'
+            str += ansi_end + 1; /* skip the ANSI sequence including 'm' */
         }
-            vga_putchar(*str++);
-    }
-}
-
-void ansi_color_parse(const char* code) {
-    switch (*code) {
-        case '0': vga_color = 0x07; break; // reset
-        case '3': break; // foreground
-        case '4': break; // background
-        case '9': break; // high intensity foreground
-        case '1': break; // high intensity background
+        vga_putchar(*str++);
     }
 }
 

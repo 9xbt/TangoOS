@@ -1,5 +1,5 @@
 #include <cpu/tables/idt.h>
-#include <libs/printf.h>
+#include <lib/printf.h>
 
 struct idt_entry idt_entries[256];
 struct idtr idt_descriptor;
