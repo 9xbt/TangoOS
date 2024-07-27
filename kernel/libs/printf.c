@@ -1,9 +1,13 @@
 #include <stdarg.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <libs/libc.h>
 #include <drivers/vga.h>
+#include <drivers/serial.h>
 
 char printf_buf[1024] = {-1};
 int printf_ptr = 0;
+bool auxiliary_output = false;
 
 void parse_num(uint32_t val, uint32_t base) {
     uint32_t n = val / base;
@@ -25,9 +29,8 @@ void parse_hex(uint32_t val) {
     }
 }
 
-void printf(const char *fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
+int vprintf(const char *fmt, va_list args) {
+    memset(printf_buf, 0, 1024);
     printf_ptr = 0;
 
     while (*fmt) {
@@ -50,12 +53,31 @@ void printf(const char *fmt, ...) {
                     printf_buf[printf_ptr++] = (char)va_arg(args, int);
                     break;
             }
-        }
-        else {
+        } else {
             printf_buf[printf_ptr++] = *fmt;
         }
         fmt++;
     }
 
+    return 0;
+}
+
+int printf(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    int ret = vprintf(fmt, args);
+    vga_puts(printf_buf);
     va_end(args);
+
+    return ret;
+}
+
+int dprintf(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    int ret = vprintf(fmt, args);
+    serial_puts(printf_buf);
+    va_end(args);
+
+    return ret;
 }

@@ -15,6 +15,7 @@ section .text.prologue
 global _start
 extern _main
 _start:
+    cli
     mov esp, stack_top
 
     push eax

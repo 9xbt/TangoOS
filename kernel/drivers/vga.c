@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <drivers/vga.h>
+#include <libs/string.h>
 #include <cpu/io.h>
 
 uint8_t vga_x = 0;
@@ -10,13 +11,52 @@ uint16_t *vga_buffer = (uint16_t *)0xB8000;
 void vga_clear(void) {
     int i = 0;
     for (i = 0; i < 80 * 25; i++) {
-        vga_buffer[i] = 0x07 << 8;
+        vga_buffer[i] = vga_color << 8;
     }
 }
 
-void vga_puts(const char *str) {
-    while (*str){
-        vga_putchar(*str++);
+void vga_puts(const char* str) {
+    while (*str) {
+        // simple ANSI impl (only colors for now)
+        if (*str == '\033' && *(str+1) == '[') {
+            int ansi_end;
+            char code[16] = {0}; // a buffer to hold the ANSI code
+            int code_index = 0;
+
+            for (int i = 2; ; i++) {
+                if (*(str+i) == 'm') { 
+                    ansi_end = i; 
+                    break; 
+                }
+                if (code_index < (sizeof(code) - 1)) {
+                    code[code_index++] = *(str+i);
+                }
+            }
+
+            code[code_index] = '\0'; // null-terminate the code string
+
+            if (str_contains_char(code,';'))
+                str_shift_left(code, 2);
+
+            // Assuming vga_putchar is just for debugging to see the code
+            for (int i = 0; code[i] != '\0'; i++) {
+                vga_color = (0x4 << 4) | 0x9;
+                vga_putchar(code[i]);
+            }
+
+            str += ansi_end + 1; // skip the ANSI sequence including 'm'
+        }
+            vga_putchar(*str++);
+    }
+}
+
+void ansi_color_parse(const char* code) {
+    switch (*code) {
+        case '0': vga_color = 0x07; break; // reset
+        case '3': break; // foreground
+        case '4': break; // background
+        case '9': break; // high intensity foreground
+        case '1': break; // high intensity background
     }
 }
 
@@ -35,7 +75,7 @@ void vga_putchar(const char c) {
             vga_puts("    ");
             break;
         default:
-            vga_buffer[vga_y * 80 + vga_x] = (0x07 << 8) | c;
+            vga_buffer[vga_y * 80 + vga_x] = (vga_color << 8) | c;
             vga_x++;
             break;
     }

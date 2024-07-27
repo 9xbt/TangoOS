@@ -1,8 +1,10 @@
 #include <cpu/tables/gdt.h>
-#include <drivers/serial.h>
+#include <libs/printf.h>
 
 struct gdt_entry gdt_entries[3];
 struct gdtr gdt_descriptor;
+
+extern void gdt_load(void);
 
 void gdt_install(void) {
     gdt_set_entry(0, 0x0000, 0x00000000, 0b00000000, 0b00000000);
@@ -10,13 +12,13 @@ void gdt_install(void) {
     gdt_set_entry(2, 0xFFFF, 0x00000000, 0b10010011, 0b11001111);
 
     gdt_descriptor = (struct gdtr) {
-        .size = sizeof(struct gdt_entry) * 3,
+        .size = sizeof(struct gdt_entry) * 3 - 1,
         .offset = (uint32_t)&gdt_entries
     };
 
-    asm volatile ("lgdt %0" :: "m"(gdt_descriptor) : "memory");
+    gdt_load();
     
-    dprintf("gdt_install: initialized GDT");
+    dprintf("gdt_install: initialized GDT\n");
 }
 
 void gdt_set_entry(uint8_t index, uint16_t limit, uint32_t base, uint8_t access, uint8_t gran) {
