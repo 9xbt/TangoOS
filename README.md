@@ -17,3 +17,4 @@ tangoOS is your average 32-bit OS written in C.
 - [X] VGA
 - [X] PIC
 - [X] Serial (QEMU debugcon)
+- [X] RTC
