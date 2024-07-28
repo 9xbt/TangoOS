@@ -45,7 +45,7 @@ void vga_puts(const char* str) {
         /* simple ANSI implementation (only colors for now) */
         if (*str == '\033' && *(str+1) == '[') {
             int ansi_end;
-            char code[16] = {0}; /* a buffer to hold the ANSI code */
+            char code[16]; /* a buffer to hold the ANSI code */
             int code_index = 0;
 
             for (int i = 2; ; i++) {
