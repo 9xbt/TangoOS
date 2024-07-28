@@ -1,4 +1,6 @@
 #include <mm/pmm.h>
+#include <mm/alloc.h>
+#include <fs/ext2.h>
 #include <lib/panic.h>
 #include <lib/printf.h>
 #include <lib/multiboot.h>
@@ -34,6 +36,8 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     kbd_install();
     pit_install();
     ata_install();
+
+    ext2_init();
 
     /*int arr[4];
     arr[4] = 10;

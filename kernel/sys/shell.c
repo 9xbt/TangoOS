@@ -6,6 +6,7 @@
 #include <drivers/rtc.h>
 #include <drivers/vga.h>
 #include <drivers/pit.h>
+#include <drivers/kbd.h>
 
 int about_cmd();
 int prompt_cmd();
@@ -46,7 +47,7 @@ char *shell_cmd_descriptions[] = {
     "Sleeps for the amount of milliseconds you give it, using the PIT."
 };
 
-int *shell_cmd_handlers[] = {
+int (*shell_cmd_handlers[])(void) = {
     about_cmd,
     prompt_cmd,
     credits_cmd,
@@ -204,7 +205,7 @@ int shell_loop(int val) {
     kbd_ngets(shell_input, 256);
 
     if (!strcmp(shell_input, "")) {
-        return;
+        return 0;
     }
 
     for (int i = 0; i < shell_cmd_no; i++) {

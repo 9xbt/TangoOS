@@ -14,7 +14,8 @@ uint32_t rtc_day(void);
 uint32_t rtc_month(void);
 uint32_t rtc_year(void);
 uint32_t rtc_century(void);
-uint32_t rtc_time();
+uint32_t rtc_day_of_week(void);
+uint32_t rtc_time(void);
 void rtc_sleep(uint32_t seconds);
 
 #endif

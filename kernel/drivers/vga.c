@@ -31,8 +31,8 @@ void ansi_color_parse(const char* code) {
         case '0': vga_color = 0x07; break; /* reset */
         case '3': vga_color = (vga_color & 0xF0) | ansi_to_vga[char_to_int(*(code + 1))]; break; /* foreground */
         case '4': vga_color = (vga_color & 0xF0) | ansi_to_vga[char_to_int(*(code + 1))] << 4; break; /* background */
-        case '9': vga_color = (vga_color & 0xF0) | ansi_to_vga[char_to_int(*(code + 1))] + 0x8; break; /* high intensity foreground */
-        case '1': vga_color = ((vga_color & 0xF0) | ansi_to_vga[char_to_int(*(code + 2))] + 0x8) << 4; break; /* high intensity background */
+        case '9': vga_color = (vga_color & 0xF0) | (ansi_to_vga[char_to_int(*(code + 1))] + 0x8); break; /* high intensity foreground */
+        case '1': vga_color = ((vga_color & 0xF0) | (ansi_to_vga[char_to_int(*(code + 2))] + 0x8) << 4); break; /* high intensity background */
     }
 }
 

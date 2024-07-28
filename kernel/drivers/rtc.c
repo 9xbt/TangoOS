@@ -48,7 +48,7 @@ uint32_t rtc_century(void) {
     return bcd_to_bin(inb(0x71));
 }
 
-uint32_t rtc_day_of_week() {
+uint32_t rtc_day_of_week(void) {
     uint32_t year = rtc_year();
     uint32_t month = rtc_month();
     uint32_t day = rtc_day();
@@ -61,7 +61,7 @@ uint32_t rtc_day_of_week() {
     return (day + (13 * (month + 1) / 5) + (year % 100) + ((year % 100) / 4) + ((year / 100) / 4) + 5 * (year / 100)) % 7;
 }
 
-uint32_t rtc_time() {
+uint32_t rtc_time(void) {
     return rtc_hour() * 3600 + rtc_minute() * 60 + rtc_second();
 }
 

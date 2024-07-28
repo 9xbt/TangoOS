@@ -1,9 +1,10 @@
 #include <stddef.h>
-#include <drivers/kbd.h>
-#include <cpu/tables/idt.h>
-#include <lib/printf.h>
 #include <stdbool.h>
+#include <lib/libc.h>
+#include <lib/printf.h>
+#include <drivers/kbd.h>
 #include <cpu/io.h>
+#include <cpu/tables/idt.h>
 
 bool kbd_key_pressed = false;
 char kbd_char = '\0';

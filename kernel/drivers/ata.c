@@ -1,6 +1,7 @@
+#include <cpu/io.h>
+#include <lib/printf.h>
 #include <drivers/vga.h>
 #include <drivers/ata.h>
-#include <cpu/io.h>
 
 uint16_t ata_base;
 uint8_t ata_type;

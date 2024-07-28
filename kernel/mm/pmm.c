@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <mm/pmm.h>
+#include <mm/alloc.h>
 #include <lib/libc.h>
 #include <lib/panic.h>
 #include <lib/printf.h>
@@ -19,7 +20,8 @@ uint32_t pmm_bitmap_size = 0;
  * pmm_install - sets up the physical memory manager (PMM)
  */
 void pmm_install(struct multiboot_info_t *mbd) {
-    dprintf("\033[92m * \033[0minitializing bitmap allocator... ");
+    dprintf("\033[92m * \033[0minitializing allocator... ");
+    printf("\n");
 
     /* Check bit 6 to see if we have a valid memory map */
     if(!(mbd->flags >> 6 & 0x1)) {
@@ -28,8 +30,8 @@ void pmm_install(struct multiboot_info_t *mbd) {
 
     //printf("Displaying memory map below:\n\n");
 
-    uint32_t higher_address;
-    uint32_t top_address;
+    uint32_t higher_address = 0;
+    uint32_t top_address = 0;
     struct multiboot_memory_map_t *kernel_mmmt = NULL;
 
     /* Loop through the memory map and display the values */
@@ -39,13 +41,13 @@ void pmm_install(struct multiboot_info_t *mbd) {
         struct multiboot_memory_map_t* mmmt = 
             (struct multiboot_memory_map_t*) (mbd->mmap_addr + i);
 
-        //printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
-        //    mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
+        printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+            mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
 
         if (mmmt->type == MULTIBOOT_MEMORY_AVAILABLE) {
             /* 
              * Do something with this memory block!
-             * BE WARNED that some of memory shown as availiable is actually 
+             * BE WARNED that some of memory shown as available is actually 
              * actively being used by the kernel! You'll need to take that
              * into account before writing to memory!
              */
@@ -62,14 +64,14 @@ void pmm_install(struct multiboot_info_t *mbd) {
         }
     }
 
-    pmm_bitmap = &end;
-
-    kernel_mmmt->len_low -= (uint32_t)pmm_bitmap - kernel_mmmt->addr_low;
-    kernel_mmmt->addr_low = (uint32_t)pmm_bitmap;
+    pmm_bitmap = (uint8_t *)&end;
 
     pmm_page_count = kernel_mmmt->len_low / PAGE_SIZE;
     pmm_bitmap_size = ALIGN_UP(pmm_page_count / 8, PAGE_SIZE);
     memset(pmm_bitmap, 0xFF, pmm_bitmap_size);
+
+    kernel_mmmt->len_low -= (uint32_t)pmm_bitmap - kernel_mmmt->addr_low;
+    kernel_mmmt->addr_low = (uint32_t)pmm_bitmap + pmm_bitmap_size;
 
     for(uint32_t i = 0; i < mbd->mmap_length;
         i += sizeof(struct multiboot_memory_map_t))
@@ -78,18 +80,20 @@ void pmm_install(struct multiboot_info_t *mbd) {
             (struct multiboot_memory_map_t*) (mbd->mmap_addr + i);
 
         for (uint32_t o = 0; o < mmmt->len_low; o += PAGE_SIZE) {
-            if (mmmt->type == MULTIBOOT_MEMORY_AVAILABLE) {
+            if (mmmt->type == MULTIBOOT_MEMORY_AVAILABLE && mmmt->addr_low >= 0x100000) {
                 bitmap_clear(pmm_bitmap, (mmmt->addr_low + o) / PAGE_SIZE);
             }
         }
     }
 
-    //printf("Displaying kernel memory map entry below:\n\n");
+    printf("Displaying kernel memory map entry below:\n\n");
 
-    //printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
-        //kernel_mmmt->addr_low, kernel_mmmt->len_low, kernel_mmmt->size, kernel_mmmt->type);
+    printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+        kernel_mmmt->addr_low, kernel_mmmt->len_low, kernel_mmmt->size, kernel_mmmt->type);
 
-    //printf("PMM bitmap address: 0x%x\n", (uint32_t)pmm_bitmap);
+    printf("PMM bitmap address: 0x%x\n", (uint32_t)pmm_bitmap);
+
+    alloc_init();
     dprintf("\033[94m[\033[92mok\033[94m]\033[0m\n");
 }
 
@@ -108,7 +112,7 @@ uint32_t pmm_find_pages(uint32_t page_count) {
             if (pages == page_count) {
                 /* Found enough pages! */
                 for (uint32_t i = 0; i < pages; i++) {
-                    bitmap_set(pmm_bitmap, pmm_last_page + 1);
+                    bitmap_set(pmm_bitmap, first_page + i);
                 }
 
                 pmm_last_page += pages;
@@ -126,7 +130,12 @@ uint32_t pmm_find_pages(uint32_t page_count) {
 
 void *pmm_alloc(size_t page_count) {
     uint32_t pages = pmm_find_pages(page_count);
+    if (pages == 0) {
+        pmm_last_page = 0;
+        pages = pmm_find_pages(page_count);
+    }
     uint32_t phys_addr = pages * PAGE_SIZE;
+    printf("pmm: allocated %d pages at 0x%x\n", page_count, phys_addr);
     return (void*)(phys_addr);
 }
 
@@ -135,10 +144,12 @@ void pmm_free(void *ptr, size_t page_count) {
     for (uint32_t i = 0; i < page_count; i++) {
         bitmap_clear(pmm_bitmap, page + i);
     }
+    printf("pmm: freed %d pages at 0x%x\n", page_count, (uint32_t)ptr);
 }
 
 uint32_t pmm_get_total_mem() {
     uint32_t total_bytes = pmm_bitmap_size * PAGE_SIZE * 8;
+    return total_bytes;
 }
 
 uint32_t pmm_get_usable_mem() {
@@ -149,8 +160,12 @@ uint32_t pmm_get_used_mem() {
     uint32_t used_bytes = 0;
 
     for (uint32_t i = 0; i < pmm_bitmap_size; i++) {
-        if (i == 0xFF) {
-            used_bytes += PAGE_SIZE * 8;
+        if (pmm_bitmap[i] != 0) {
+            for (uint8_t bit = 0; bit < 8; bit++) {
+                if (pmm_bitmap[i] & (1 << bit)) {
+                    used_bytes += PAGE_SIZE;
+                }
+            }
         }
     }
 

@@ -78,7 +78,7 @@ void __ubsan_handle_type_mismatch_v1(mubsan_type_mismatch_info_v1* data, uintptr
         reason = "use of a misaligned pointer";
     }
 
-    mubsan_log("mubsan @ %s:%u:%u: %s, %s type %s at alignment %u at address 0x%lx\n",
+    mubsan_log("mubsan @ %s:%d:%d: %s, %s type %s at alignment %d at address 0x%x\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -89,7 +89,7 @@ void __ubsan_handle_type_mismatch_v1(mubsan_type_mismatch_info_v1* data, uintptr
                ptr);
 }
 void __ubsan_handle_add_overflow(mubsan_overflow* data, uintptr_t lhs, uintptr_t rhs) {
-    mubsan_log("mubsan @ %s:%u:%u: addition overflow, for type %s, expression %lu + %lu\n",
+    mubsan_log("mubsan @ %s:%d:%d: addition overflow, for type %s, expression %d + %d\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -98,7 +98,7 @@ void __ubsan_handle_add_overflow(mubsan_overflow* data, uintptr_t lhs, uintptr_t
                rhs);
 }
 void __ubsan_handle_sub_overflow(mubsan_overflow* data, uintptr_t lhs, uintptr_t rhs) {
-    mubsan_log("mubsan @ %s:%u:%u: subtraction overflow, for type %s, expression %lu - %lu\n",
+    mubsan_log("mubsan @ %s:%d:%d: subtraction overflow, for type %s, expression %d - %d\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -107,7 +107,7 @@ void __ubsan_handle_sub_overflow(mubsan_overflow* data, uintptr_t lhs, uintptr_t
                rhs);
 }
 void __ubsan_handle_mul_overflow(mubsan_overflow* data, uintptr_t lhs, uintptr_t rhs) {
-    mubsan_log("mubsan @ %s:%u:%u: multiplication overflow, for type %s, expression %lu * %lu\n",
+    mubsan_log("mubsan @ %s:%d:%d: multiplication overflow, for type %s, expression %d * %d\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -116,7 +116,7 @@ void __ubsan_handle_mul_overflow(mubsan_overflow* data, uintptr_t lhs, uintptr_t
                rhs);
 }
 void __ubsan_handle_negate_overflow(mubsan_overflow* data, uintptr_t val) {
-    mubsan_log("mubsan @ %s:%u:%u: negate overflow, for type %s, value %lu\n",
+    mubsan_log("mubsan @ %s:%d:%d: negate overflow, for type %s, value %d\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -124,7 +124,7 @@ void __ubsan_handle_negate_overflow(mubsan_overflow* data, uintptr_t val) {
                val);
 }
 void __ubsan_handle_divrem_overflow(mubsan_overflow* data, uintptr_t lhs, uintptr_t rhs) {
-    mubsan_log("mubsan @ %s:%u:%u: divistion overflow, for type %s, expression %lu / %lu\n",
+    mubsan_log("mubsan @ %s:%d:%d: divistion overflow, for type %s, expression %d / %d\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -133,7 +133,7 @@ void __ubsan_handle_divrem_overflow(mubsan_overflow* data, uintptr_t lhs, uintpt
                rhs);
 }
 void __ubsan_handle_pointer_overflow(mubsan_pointer_overflow* data, uintptr_t base, uintptr_t result) {
-    mubsan_log("mubsan @ %s:%u:%u: pointer overflow, base 0x%lx, result 0x%lx\n",
+    mubsan_log("mubsan @ %s:%d:%d: pointer overflow, base 0x%x, result 0x%x\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -141,7 +141,7 @@ void __ubsan_handle_pointer_overflow(mubsan_pointer_overflow* data, uintptr_t ba
                result);
 }
 void __ubsan_handle_out_of_bounds(mubsan_out_of_bounds* data, uintptr_t index) {
-    mubsan_log("mubsan @ %s:%u:%u: array out of bounds, for type %s, by index type %s %lu\n",
+    mubsan_log("mubsan @ %s:%d:%d: array out of bounds, for type %s, by index type %s %d\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -150,13 +150,13 @@ void __ubsan_handle_out_of_bounds(mubsan_out_of_bounds* data, uintptr_t index) {
                index);
 }
 void __ubsan_handle_nonnull_arg(mubsan_not_null_arg* data) {
-    mubsan_log("mubsan @ %s:%u:%u: not-null argument is null\n",
+    mubsan_log("mubsan @ %s:%d:%d: not-null argument is null\n",
                data->loc.file,
                data->loc.line,
                data->loc.col);
 }
 void __ubsan_handle_load_invalid_value(mubsan_invalid_value* data, uintptr_t val) {
-    mubsan_log("mubsan @ %s:%u:%u: load of invalid value, for type %s, value %lu\n",
+    mubsan_log("mubsan @ %s:%d:%d: load of invalid value, for type %s, value %d\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -164,7 +164,7 @@ void __ubsan_handle_load_invalid_value(mubsan_invalid_value* data, uintptr_t val
                val);
 }
 void __ubsan_handle_shift_out_of_bounds(mubsan_shift_out_of_bounds* data, uintptr_t lhs, uintptr_t rhs) {
-    mubsan_log("mubsan @ %s:%u:%u: shift out of bounds, of type %s and %s, value %lu and %lu\n",
+    mubsan_log("mubsan @ %s:%d:%d: shift out of bounds, of type %s and %s, value %d and %d\n",
                data->loc.file,
                data->loc.line,
                data->loc.col,
@@ -174,7 +174,7 @@ void __ubsan_handle_shift_out_of_bounds(mubsan_shift_out_of_bounds* data, uintpt
                rhs);
 }
 void __ubsan_handle_builtin_unreachable(mubsan_unreachable* data) {
-    mubsan_log("mubsan @ %s:%u:%u: unreachable code was reached\n",
+    mubsan_log("mubsan @ %s:%d:%d: unreachable code was reached\n",
                data->loc.file,
                data->loc.line,
                data->loc.col);

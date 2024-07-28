@@ -19,16 +19,18 @@ tangoOS is your average 32-bit OS written in C.
 - [X] Serial (QEMU debugcon)
 - [X] RTC
 - [X] PS/2 keyboard
-- [ ] PMM
+- [ ] PCI
+- [X] PMM
 - [ ] Heap
-- [ ] ATA/ATAPI driver
+- [X] Basic ATA driver
 - [ ] ext2 filesystem
 - [ ] elf32 program execution
 
 ### Libraries
-- [X] Printf
-- [X] Some string functions
-- [X] Some libc functions
+- [X] `printf()`, `vprintf()`, `dprintf()`
+- [X] `panic()`
+- [X] `memcpy()`, `memset()`, `memmove()`, `memcpy()`
+- [X] `strlen()`, `strcmp()`, `strncmp()`, `strcpy()`
 
 ### Shell (built-in commands for now)
 - [X] about
