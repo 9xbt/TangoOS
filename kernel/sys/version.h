@@ -1,15 +1,14 @@
-#ifndef __VERSION_H
-#define __VERSION_H
+#ifndef VERSION_H
+#define VERSION_H
 
-/* If you change this, i will find you. */
-const char *__kernel_name = "tango32";
+extern const char *__kernel_name;
 
-int __kernel_version_major = 0;
-int __kernel_version_minor = 2;
+extern int __kernel_version_major;
+extern int __kernel_version_minor;
 
-const char *__kernel_arch = "i386";
+extern const char *__kernel_arch;
 
-const char *__kernel_build_date = __DATE__;
-const char *__kernel_build_time = __TIME__;
+extern const char *__kernel_build_date;
+extern const char *__kernel_build_time;
 
 #endif

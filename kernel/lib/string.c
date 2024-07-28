@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <lib/libc.h>
 #include <lib/string.h>
 
 /*

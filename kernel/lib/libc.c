@@ -102,3 +102,22 @@ int strncmp(const char *x, const char *y, register size_t n) {
     }
     return 0;
 }
+
+/*
+ * strcpy - copies string.
+ */
+char *strcpy(char* dest, const char* src) {
+    if (dest == NULL) {
+        return NULL;
+    }
+ 
+    char *ptr = dest;
+    while (*src != '\0') {
+        *dest = *src;
+        dest++;
+        src++;
+    }
+ 
+    *dest = '\0';
+    return ptr;
+}

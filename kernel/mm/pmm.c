@@ -1,9 +1,15 @@
+#include <mm/pmm.h>
 #include <lib/libc.h>
 #include <lib/panic.h>
 #include <lib/printf.h>
 #include <lib/multiboot.h>
 
+extern void *end;
+
 uint8_t *pmm_bitmap = NULL;
+uint32_t pmm_last_page = 0;
+uint32_t pmm_used_pages = 0;
+uint32_t pmm_page_count = 0;
 
 /*
  * pmm_install - sets up the physical memory manager (PMM)
@@ -16,7 +22,7 @@ void pmm_install(struct multiboot_info_t *mbd) {
 
     printf("Displaying memory map below:\n\n");
 
-    struct multiboot_mempry_map_t *kernel_mmmt = NULL;
+    struct multiboot_memory_map_t *kernel_mmmt = NULL;
 
     /* Loop through the memory map and display the values */
     for(int i = 0; i < mbd->mmap_length;
@@ -25,7 +31,7 @@ void pmm_install(struct multiboot_info_t *mbd) {
         struct multiboot_memory_map_t* mmmt = 
             (struct multiboot_memory_map_t*) (mbd->mmap_addr + i);
 
-        printf("Start Addr: %x | Length: %x | Size: %x | Type: %d",
+        printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
             mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
 
         if (mmmt->type == MULTIBOOT_MEMORY_AVAILABLE &&
@@ -38,7 +44,14 @@ void pmm_install(struct multiboot_info_t *mbd) {
              */
             kernel_mmmt = mmmt;
         }
-
-        printf("\n");
     }
+
+    pmm_bitmap = &end;
+    pmm_page_count = kernel_mmmt->len_low / PAGE_SIZE;
+    uint32_t bitmap_size = ALIGN_UP(pmm_page_count / 8, PAGE_SIZE);
+
+    memset(pmm_bitmap, 0xFF, bitmap_size);
+
+    dprintf("pmm_install: pmm bitmap: 0x%x\n", (uint32_t)pmm_bitmap);
+    dprintf("pmm_install: initialized PMM\n");
 }

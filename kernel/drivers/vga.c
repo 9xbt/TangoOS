@@ -18,6 +18,9 @@ uint16_t *vga_buffer = (uint16_t *)0xB8000;
 void vga_clear(void) {
     for (int i = 0; i < 80 * 25; i++)
         vga_buffer[i] = vga_color << 8;
+    vga_x = 0;
+    vga_y = 0;
+    vga_update_cursor();
 }
 
 /*
@@ -82,6 +85,9 @@ void vga_putchar(const char c) {
                 vga_x = 79;
                 vga_y--;
             }
+            vga_x--;
+            vga_putchar(' ');
+            vga_x--;
             break;
         case '\t':
             vga_puts("    ");

@@ -31,5 +31,19 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
         __kernel_name, __kernel_version_major,__kernel_version_minor,
         __kernel_build_date, __kernel_build_time, __kernel_arch);
 
+    /*int arr[4];
+    arr[4] = 10;
+
+    _Bool* boolPtr;
+    int value = 188;
+
+    boolPtr = (_Bool*)&value; // Assign a non-zero value to a _Bool pointer
+
+    // Print the value to avoid optimization
+    printf("Bool value: %d\n", *boolPtr);
+
+    int* val = NULL;
+    int a = *val;*/
+
     shell_entry();
 }

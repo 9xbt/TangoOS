@@ -1,5 +1,5 @@
-#ifndef __KBD_H
-#define __KBD_H
+#ifndef __SHELL_H
+#define __SHELL_H
 
 void shell_entry(void);
 void shell(void);

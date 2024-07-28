@@ -27,7 +27,7 @@ SECTIONS
         *(.bss)
     }
 
-    end = .;
+    end = ALIGN(4K);
 
     /DISCARD/ :
 	{
