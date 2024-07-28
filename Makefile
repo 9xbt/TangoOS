@@ -12,7 +12,7 @@ KERNEL_OBJS := $(addprefix bin/kernel/, $(KERNEL_S_SOURCES:.S=.S.o) $(KERNEL_C_S
 
 # Flags
 ASFLAGS = -f elf32 -Wall -g -F dwarf
-CCFLAGS = -m32 -std=gnu11 -ffreestanding -O0 -Wall -Wextra -nostdlib -I kernel -fno-stack-protector -Wno-unused-parameter -fsanitize=undefined
+CCFLAGS = -m32 -std=gnu11 -ffreestanding -O0 -Wall -Wextra -nostdlib -I kernel -fno-stack-protector -Wno-unused-parameter -fsanitize=undefined -fno-stack-check -fno-lto -mno-mmx -mno-sse -mno-sse2 -mno-80387 -mno-red-zone 
 QEMUFLAGS = -debugcon stdio -m 256M -cdrom bin/tangoOS.iso -rtc base=localtime -drive file=bin/fs.hdd,format=raw -boot d
 LDFLAGS = -m elf_i386 -Tkernel/linker.ld -z noexecstack
 
