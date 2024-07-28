@@ -38,7 +38,9 @@ void pic_install(void) {
     outb(PIC1_DAT, 0x00);
     outb(PIC2_DAT, 0x00);
 
-    dprintf("pic_install: initialized PIC\n");
+    asm volatile ("sti");
+    
+    dprintf("\033[94m[\033[92mok\033[94m]\033[0m\n");
 }
 
 /*

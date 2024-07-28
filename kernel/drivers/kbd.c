@@ -32,6 +32,9 @@ void kbd_handler(struct registers r) {
                 break;
             default:
                 kbd_key_pressed = true;
+                if (key >= sizeof(kb_map_keys)) {
+                    break;
+                }
                 if (kbd_shift) {
                     kbd_char = kb_map_keys_shift[key];
                 } else if (kbd_caps) {
@@ -124,6 +127,7 @@ void kbd_ngets(char* buf, size_t n) {
  * kbd_install - sets up the PS/2 keyboard driver
  */
 void kbd_install(void) {
+    dprintf("\033[92m * \033[0minitializing PS/2 keyboard... ");
     irq_register(1, kbd_handler);
-    dprintf("kbd_install: initialized PS/2 keyboard\n");
+    dprintf("\033[94m[\033[92mok\033[94m]\033[0m\n");
 }

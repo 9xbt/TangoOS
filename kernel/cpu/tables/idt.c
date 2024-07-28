@@ -48,6 +48,7 @@ const char* isr_errors[32] = {
  * idt_install - sets up the IDT
  */
 void idt_install(void) {
+    dprintf("\033[92m * \033[0minitializing interrupts... ");
     for (uint16_t i = 0; i < 256; i++) {
         idt_set_entry(i, (uint32_t)idt_int_table[i], 0x08, 0x8E);
     }
@@ -58,9 +59,6 @@ void idt_install(void) {
     };
 
     asm volatile ("lidt %0" :: "m"(idt_descriptor));
-    asm volatile ("sti");
-
-    dprintf("idt_install: initialized IDT\n");
 }
 
 /*

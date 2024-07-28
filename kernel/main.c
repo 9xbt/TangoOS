@@ -2,14 +2,15 @@
 #include <lib/panic.h>
 #include <lib/printf.h>
 #include <lib/multiboot.h>
+#include <sys/shell.h>
 #include <sys/version.h>
 #include <drivers/vga.h>
 #include <drivers/pic.h>
 #include <drivers/kbd.h>
+#include <drivers/pit.h>
+#include <drivers/ata.h>
 #include <cpu/tables/gdt.h>
 #include <cpu/tables/idt.h>
-#include <sys/shell.h>
-#include <drivers/pit.h>
 
 void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     #ifdef BLINDMODE
@@ -17,6 +18,10 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     #endif
     vga_clear();
     vga_enable_cursor();
+
+    printf("\nWelcome to \033[96mtangoOS\033[0m!\n%s %d.%d %s %s %s\n\n",
+        __kernel_name, __kernel_version_major,__kernel_version_minor,
+        __kernel_build_date, __kernel_build_time, __kernel_arch);
 
     if (mboot_magic != 0x2BADB002) {
         panic("invalid multiboot header");
@@ -28,10 +33,7 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     pmm_install(mboot_info);
     kbd_install();
     pit_install();
-
-    printf("\nWelcome to \033[96mtangoOS\033[0m!\n%s %d.%d %s %s %s\n\n",
-        __kernel_name, __kernel_version_major,__kernel_version_minor,
-        __kernel_build_date, __kernel_build_time, __kernel_arch);
+    ata_install();
 
     /*int arr[4];
     arr[4] = 10;
@@ -46,6 +48,8 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
 
     int* val = NULL;
     int a = *val;*/
+
+    printf("\n");
 
     shell_entry();
 }

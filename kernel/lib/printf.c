@@ -85,13 +85,14 @@ int printf(const char *fmt, ...) {
 }
 
 /*
- * dprintf - debug printf, prints format to QEMU debugcon console
+ * dprintf - debug printf, prints format to both the VGA & QEMU debugcon console
  */
 int dprintf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     int ret = vprintf(fmt, args);
     serial_puts(printf_buf);
+    vga_puts(printf_buf);
     va_end(args);
 
     return ret;
@@ -104,6 +105,7 @@ void mubsan_log(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
     vprintf(fmt, args);
+    vga_puts(printf_buf);
     va_end(args);
     
     asm volatile ("cli");

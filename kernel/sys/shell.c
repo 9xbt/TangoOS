@@ -73,8 +73,8 @@ int prompt_cmd() {
 
 int credits_cmd() {
     printf("\033[32m                                -- CREDITS --                                 \n\n");
-    printf("\033[93m               ____  \n__  ___ __ ___|___ \\  Role: tangoOS owner\n\\ \\/ / '__/ __| __) | Other projects: Medlar64, WebWatcher, 9xVM, SVGAIITerminal >  <| | | (__ / __/  About: Just an average coder that codes stuff.\n/_/\\_\\_|  \\___|_____| Links: www.mobren.net\n\n");
-    printf("\033[94m          _       _    \n__      _(_)_ __ | | __ Role: tangoOS Collaborator\n\\ \\ /\\ / / | '_ \\| |/ / Other projects: malino, moss, yamjo, tinyutils, 2x\n \\ V  V /| | | | |   <  About: Not a rust programmer.\n  \\_/\\_/ |_|_| |_|_|\\_\\ Links: www.winksplorer.net\n\n\033[0m");
+    printf("\033[93m               ____  \n__  ___ __ ___|___ \\  Role: tangoOS owner\n\\ \\/ / '__/ __| __) | Other projects: upOS, tinyboot, WebWatcher, SVGAIITerminal >  <| | | (__ / __/  About: Just an average coder that codes stuff.\n/_/\\_\\_|  \\___|_____| Links: www.mobren.net\n\n");
+    printf("\033[94m          _       _    \n__      _(_)_ __ | | __ Role: tangoOS Collaborator\n\\ \\ /\\ / / | '_ \\| |/ / Other projects: malino, moss, yamjo, tinyutils, 2x, yass \\ V  V /| | | | |   <  About: Not a rust programmer.\n  \\_/\\_/ |_|_| |_|_|\\_\\ Links: www.winksplorer.net\n\n\033[0m");
     return 0;
 }
 
