@@ -1,5 +1,7 @@
-#include <cpu/tables/idt.h>
+#include <lib/libc.h>
 #include <lib/printf.h>
+#include <drivers/pic.h>
+#include <cpu/tables/idt.h>
 
 struct idt_entry idt_entries[256];
 struct idtr idt_descriptor;
@@ -106,6 +108,7 @@ void irq_handler(struct registers r) {
     void(*handler)(struct registers);
     handler = irq_handlers[r.int_no - 32];
 
-    if (handler != (void *)0)
+    if (handler != NULL)
         handler(r);
+    pic_eoi(r.int_no);
 }

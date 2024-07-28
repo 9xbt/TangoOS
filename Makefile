@@ -1,6 +1,6 @@
 # Toolchain
 AS = nasm
-CC = clang
+CC = gcc
 LD = ld
 
 # Automatically find sources
@@ -42,12 +42,14 @@ dirs:
 	mkdir -p bin
 
 bin/kernel/%.c.o: kernel/%.c
-	mkdir -p "$$(dirname $@)"
-	$(CC) $(CCFLAGS) -c $< -o $@
+	@echo " CC $<"
+	@mkdir -p "$$(dirname $@)"
+	@$(CC) $(CCFLAGS) -c $< -o $@
 
 bin/kernel/%.S.o: kernel/%.S
-	mkdir -p "$$(dirname $@)"
-	$(AS) $(ASFLAGS) -o $@ $<
+	@echo " AS $<"
+	@mkdir -p "$$(dirname $@)"
+	@$(AS) $(ASFLAGS) -o $@ $<
 
 kernel: $(BOOT_OBJS) $(KERNEL_OBJS)
 	$(LD) -m elf_i386 -Tkernel/linker.ld $^ -o bin/kernel.elf

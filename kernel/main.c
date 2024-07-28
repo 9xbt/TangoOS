@@ -1,13 +1,14 @@
-#include <lib/printf.h>
+#include <mm/pmm.h>
 #include <lib/panic.h>
+#include <lib/printf.h>
 #include <lib/multiboot.h>
 #include <sys/version.h>
 #include <drivers/vga.h>
 #include <drivers/pic.h>
+#include <drivers/kbd.h>
 #include <cpu/tables/gdt.h>
 #include <cpu/tables/idt.h>
-
-#define BLINDMODE
+#include <sys/shell.h>
 
 void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     #ifdef BLINDMODE
@@ -23,9 +24,12 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     gdt_install();
     idt_install();
     pic_install();
+    pmm_install(mboot_info);
+    kbd_install();
 
-    printf("Welcome to \033[96mtangoOS\033[30m!\n%s %d.%d %s %s %s\n\n",
+    printf("\nWelcome to \033[96mtangoOS\033[0m!\n%s %d.%d %s %s %s\n\n",
         __kernel_name, __kernel_version_major,__kernel_version_minor,
         __kernel_build_date, __kernel_build_time, __kernel_arch);
-    printf("\033[46mHello world\033[0;30m");
+
+    shell_entry();
 }

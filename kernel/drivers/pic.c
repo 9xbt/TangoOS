@@ -35,8 +35,8 @@ void pic_install(void) {
     outb(PIC1_DAT, ICW4_8086);
     outb(PIC2_DAT, ICW4_8086);
 
-    outb(PIC1_DAT, 0x20);
-    outb(PIC2_DAT, 0x28);
+    outb(PIC1_DAT, 0x00);
+    outb(PIC2_DAT, 0x00);
 
     dprintf("pic_install: initialized PIC\n");
 }

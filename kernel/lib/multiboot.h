@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 
+#define MULTIBOOT_MEMORY_AVAILABLE        1
+#define MULTIBOOT_MEMORY_RESERVED         2
+#define MULTIBOOT_MEMORY_ACPI_RECLAIMABLE 3
+#define MULTIBOOT_MEMORY_NVS              4
+#define MULTIBOOT_MEMORY_BADRAM           5
+
 struct multiboot_info_t {
     uint32_t flags;
     uint32_t mem_lower;
@@ -23,5 +29,14 @@ struct multiboot_info_t {
     uint32_t boot_loader_name;
     uint32_t apm_table;
 } __attribute__((packed));
+
+struct multiboot_memory_map_t {
+	uint32_t size;
+	uint32_t addr_low;
+	uint32_t addr_high;
+	uint32_t len_low;
+    uint32_t len_high;
+	uint32_t type;
+} __attribute__ ((packed));
 
 #endif

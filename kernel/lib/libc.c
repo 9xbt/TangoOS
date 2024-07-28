@@ -1,7 +1,7 @@
 #include <lib/libc.h>
 
 /*
- * memcpy - copies memory
+ * memcpy - copies memory.
  */
 void *memcpy(void *dest, const void *src, size_t n) {
     uint8_t *pdest = (uint8_t *)dest;
@@ -15,7 +15,7 @@ void *memcpy(void *dest, const void *src, size_t n) {
 }
 
 /*
- * memset - sets memory
+ * memset - sets memory.
  */
 void *memset(void *s, int c, size_t n) {
     uint8_t *p = (uint8_t *)s;
@@ -28,7 +28,7 @@ void *memset(void *s, int c, size_t n) {
 }
 
 /*
- * memmove - moves memory
+ * memmove - moves memory.
  */
 void *memmove(void *dest, const void *src, size_t n) {
     uint8_t *pdest = (uint8_t *)dest;
@@ -48,7 +48,7 @@ void *memmove(void *dest, const void *src, size_t n) {
 }
 
 /*
- * memcmp - compares memory
+ * memcmp - compares memory.
  */
 int memcmp(const void *s1, const void *s2, size_t n) {
     const uint8_t *p1 = (const uint8_t *)s1;
@@ -60,5 +60,45 @@ int memcmp(const void *s1, const void *s2, size_t n) {
         }
     }
 
+    return 0;
+}
+
+/*
+ * strlen - returns the length of a string.
+ */
+int strlen(const char* s) {
+    int i = 0;
+    while (*s != '\0') {
+        i++;
+        s++;
+    }
+    return i;
+}
+
+/*
+ * strcmp - compares strings.
+ */
+bool strcmp(const char* a, const char* b) {
+    if (strlen(a) != strlen(b)) return 1;
+    for (int i = 0; i < strlen(a); i++) {
+        if (a[i] != b[i]) return 1;
+    }
+    return 0;
+}
+
+/*
+ * strncmp - compares n characters.
+ */
+int strncmp(const char *x, const char *y, register size_t n) {
+    unsigned char u1, u2;
+
+    while (n-- > 0) {
+        u1 = (unsigned char) *x++;
+        u2 = (unsigned char) *y++;
+        if (u1 != u2)
+	        return u1 - u2;
+        if (u1 == '\0')
+	        return 0;
+    }
     return 0;
 }

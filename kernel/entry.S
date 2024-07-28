@@ -3,7 +3,7 @@
 section .multiboot
 
 MAGIC equ 0x1BADB002
-FLAGS equ 0x00000000
+FLAGS equ 0x00000003
 CHECKSUM equ -(MAGIC + FLAGS)
 
 dd MAGIC
