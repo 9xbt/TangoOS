@@ -5,6 +5,7 @@
 #include <sys/version.h>
 #include <drivers/rtc.h>
 #include <drivers/vga.h>
+#include <drivers/pit.h>
 
 int about_cmd();
 int prompt_cmd();
@@ -14,11 +15,12 @@ int uname_cmd();
 int echo_cmd();
 int date_cmd();
 int clear_cmd();
+int sleep_cmd();
 
 char shell_prompt[256];
 char shell_input[256];
 
-int shell_cmd_no = 8;
+int shell_cmd_no = 9;
 
 char *shell_cmds[] = {
     "about",
@@ -28,7 +30,8 @@ char *shell_cmds[] = {
     "uname",
     "echo",
     "date",
-    "clear"
+    "clear",
+    "sleep"
 };
 
 char *shell_cmd_descriptions[] = {
@@ -39,7 +42,8 @@ char *shell_cmd_descriptions[] = {
     "Prints system information",
     "Echoes back the arguments (akin to the voices in your head)",
     "Prints the RTC date",
-    "Clears the screen"
+    "Clears the screen",
+    "Sleeps for the amount of milliseconds you give it, using the PIT."
 };
 
 int *shell_cmd_handlers[] = {
@@ -50,7 +54,8 @@ int *shell_cmd_handlers[] = {
     uname_cmd,
     echo_cmd,
     date_cmd,
-    clear_cmd
+    clear_cmd,
+    sleep_cmd
 };
 
 int about_cmd() {
@@ -180,6 +185,11 @@ int date_cmd() {
 
 int clear_cmd() {
     vga_clear();
+    return 0;
+}
+
+int sleep_cmd() {
+    pit_sleep(str_to_int(shell_input+6));
     return 0;
 }
 

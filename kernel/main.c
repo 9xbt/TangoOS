@@ -9,6 +9,7 @@
 #include <cpu/tables/gdt.h>
 #include <cpu/tables/idt.h>
 #include <sys/shell.h>
+#include <drivers/pit.h>
 
 void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     #ifdef BLINDMODE
@@ -26,6 +27,7 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     pic_install();
     pmm_install(mboot_info);
     kbd_install();
+    pit_install();
 
     printf("\nWelcome to \033[96mtangoOS\033[0m!\n%s %d.%d %s %s %s\n\n",
         __kernel_name, __kernel_version_major,__kernel_version_minor,

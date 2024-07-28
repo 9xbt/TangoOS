@@ -84,10 +84,11 @@ void vga_putchar(const char c) {
             if (vga_x == 0) {
                 vga_x = 79;
                 vga_y--;
+                vga_buffer[vga_y * 80 + vga_x] = vga_color << 8;
+            } else {
+                vga_x--;
+                vga_buffer[vga_y * 80 + vga_x] = vga_color << 8;
             }
-            vga_x--;
-            vga_putchar(' ');
-            vga_x--;
             break;
         case '\t':
             vga_puts("    ");

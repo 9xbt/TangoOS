@@ -36,3 +36,17 @@ void str_shift_left(char *str, const int shift) {
 uint8_t char_to_int(const char c) {
     return c - '0';
 }
+
+/*
+ * str_to_int - converts a decimal string to an integer
+ */
+uint32_t str_to_int(const char* s) {
+    uint32_t result = 0;
+    size_t length = strlen(s);
+
+    for (size_t i = 0; i < length; ++i) {
+        result = result * 10 + char_to_int(s[i]);
+    }
+
+    return result;
+}
