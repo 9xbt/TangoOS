@@ -7,12 +7,18 @@ uint16_t ata_base;
 uint8_t ata_type;
 char ata_drive_name[40];
 
+/*
+ * ata_400ns - reads the status register enough times for a 400ns delay to ensure proper data
+ */
 void ata_400ns(void) {
     for (int i = 0; i < 4; i++) {
         inb(ata_base + 7);
     }
 }
 
+/*
+ * ata_poll - polls the drive
+ */
 uint8_t ata_poll() {
     ata_400ns();
 
@@ -33,6 +39,9 @@ uint8_t ata_poll() {
     return ATA_OK;
 }
 
+/*
+ * ata_identify - identifies a drive and sets the drive label
+ */
 uint8_t ata_identify(uint16_t base, uint8_t type) {
     ata_base = base;
     ata_type = type;
@@ -72,6 +81,9 @@ uint8_t ata_identify(uint16_t base, uint8_t type) {
     return ATA_OK;
 }
 
+/*
+ * ata_read - reads drive.
+ */
 __attribute__((no_sanitize("undefined")))
 uint8_t ata_read(uint32_t lba, uint8_t *buffer, uint32_t sectors) {
     outb(ata_base + 6, (ata_type == ATA_MASTER ? 0xE0 : 0xF0) | ((lba >> 24) & 0x0F));
@@ -94,6 +106,9 @@ uint8_t ata_read(uint32_t lba, uint8_t *buffer, uint32_t sectors) {
     return ATA_OK;
 }
 
+/*
+ * ata_write - writes drive.
+ */
 __attribute__((no_sanitize("undefined")))
 uint8_t ata_write(uint32_t lba, uint8_t *buffer, uint32_t sectors) {
     outb(ata_base + 6, (ata_type == ATA_MASTER ? 0xE0 : 0xF0) | ((lba >> 24) & 0x0F));
@@ -116,8 +131,11 @@ uint8_t ata_write(uint32_t lba, uint8_t *buffer, uint32_t sectors) {
     return ATA_OK;
 }
 
+/*
+ * ata_install - inits the primary master drive.
+ */
 void ata_install(void) {
-    dprintf("\033[92m * \033[0minitializing disk... ");
+    dprintf("\033[92m * \033[0minitializing disks... ");
     if (ata_identify(ATA_PRIMARY, ATA_MASTER)) {
         dprintf("\033[94m[\033[91mfail\033[94m]\033[0m\n");
     } else {

@@ -49,6 +49,12 @@ struct ext2_sb {
     uint32_t head_of_oprphan_inode_list;
 } __attribute__((packed));
 
-int ext2_init(void);
+struct ext2_fs {
+    struct ext2_sb *sb;
+    uint32_t block_size;
+    uint32_t inode_size;
+};
+
+uint8_t ext2_init(void);
 
 #endif

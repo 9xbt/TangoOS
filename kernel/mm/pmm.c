@@ -21,7 +21,6 @@ uint32_t pmm_bitmap_size = 0;
  */
 void pmm_install(struct multiboot_info_t *mbd) {
     dprintf("\033[92m * \033[0minitializing allocator... ");
-    dprintf("\n");
 
     /* Check bit 6 to see if we have a valid memory map */
     if(!(mbd->flags >> 6 & 0x1)) {
@@ -135,7 +134,7 @@ void *pmm_alloc(size_t page_count) {
         pages = pmm_find_pages(page_count);
     }
     uint32_t phys_addr = pages * PAGE_SIZE;
-    dprintf("pmm: allocated %d pages at 0x%x\n", page_count, phys_addr);
+    dprintf("pmm: allocated %d %s at 0x%x\n", page_count, page_count == 1 ? "page" : "pages", phys_addr);
     return (void*)(phys_addr);
 }
 
@@ -144,7 +143,7 @@ void pmm_free(void *ptr, size_t page_count) {
     for (uint32_t i = 0; i < page_count; i++) {
         bitmap_clear(pmm_bitmap, page + i);
     }
-    dprintf("pmm: freed %d pages at 0x%x\n", page_count, (uint32_t)ptr);
+    dprintf("pmm: freed %d %s at 0x%x\n", page_count, page_count == 1 ? "page" : "pages", (uint32_t)ptr);
 }
 
 uint32_t pmm_get_total_mem() {

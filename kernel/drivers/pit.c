@@ -5,10 +5,16 @@
 
 uint64_t pit_ticks;
 
+/*
+ * pit_handler - handles timer interrupts.
+ */
 void pit_handler(struct registers r) {
     pit_ticks++;
 }
 
+/*
+ * pit_install - configures the timer and sets handler.
+ */
 void pit_install(void) {
     dprintf("\033[92m * \033[0minitializing timer... ");
 
@@ -22,6 +28,9 @@ void pit_install(void) {
     dprintf("\033[94m[\033[92mok\033[94m]\033[0m\n");
 }
 
+/*
+ * pit_install - sleeps in milliseconds, uses timer.
+ */
 void pit_sleep(uint32_t ms) {
     uint64_t start_ticks = pit_ticks;
     uint64_t end_ticks = start_ticks + ms;
