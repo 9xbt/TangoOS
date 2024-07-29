@@ -38,20 +38,6 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     ata_install();
     ext2_init();
 
-    /*int arr[4];
-    arr[4] = 10;
-
-    _Bool* boolPtr;
-    int value = 188;
-
-    boolPtr = (_Bool*)&value; // Assign a non-zero value to a _Bool pointer
-
-    // Print the value to avoid optimization
-    printf("Bool value: %d\n", *boolPtr);
-
-    int* val = NULL;
-    int a = *val;*/
-
     printf("\n");
 
     shell_entry();
