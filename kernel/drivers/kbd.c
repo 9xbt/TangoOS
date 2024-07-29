@@ -3,6 +3,7 @@
 #include <lib/libc.h>
 #include <lib/printf.h>
 #include <drivers/kbd.h>
+#include <drivers/vga.h>
 #include <cpu/io.h>
 #include <cpu/tables/idt.h>
 
@@ -103,7 +104,7 @@ void kbd_ngets(char* buf, size_t n) {
 
             default:
                 if (kbd_ctrl && (kbd_char == 'l' || kbd_char == 'L')) {
-                    printf("\033[2J\033[H");
+                    vga_clear();
                     
                     memset(buf, 0, n);
                     kbd_char = 0;

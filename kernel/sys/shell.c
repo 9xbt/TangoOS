@@ -199,9 +199,9 @@ int sleep_cmd() {
  */
 int shell_loop(int val) {
     if (val != 0) {
-        printf("\033[91m%d ", val);
+        printf("\033[91m%d\033[0m ", val);
     }
-    printf(shell_prompt);
+    printf("%s\033[0m", shell_prompt);
     kbd_ngets(shell_input, 256);
 
     if (!strcmp(shell_input, "")) {
@@ -230,7 +230,7 @@ int shell_loop(int val) {
  * shell_entry - entry point for the shell
  */
 void shell_entry(void) {
-    char defaultPrompt[] = "\033[91m#\033[0m ";
+    char defaultPrompt[] = "\033[91m# ";
     memcpy(shell_prompt, defaultPrompt, sizeof(defaultPrompt));
     
     int ret = 0;
