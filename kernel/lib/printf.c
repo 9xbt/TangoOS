@@ -36,6 +36,15 @@ void parse_hex(uint32_t val) {
 }
 
 /*
+ * parse_string - parses string
+ */
+void parse_string(char *str) {
+    while (*str) {
+        printf_buf[printf_ptr++] = *str++;
+    }
+}
+
+/*
  * vprintf - prints format to buffer
  */
 int vprintf(const char *fmt, va_list args) {
@@ -53,10 +62,7 @@ int vprintf(const char *fmt, va_list args) {
                     parse_hex(va_arg(args, uint32_t));
                     break;
                 case 's':
-                    char *str = va_arg(args, char *);
-                    while (*str) {
-                        printf_buf[printf_ptr++] = *str++;
-                    }
+                    parse_string(va_arg(args, char *));
                     break;
                 case 'c':
                     printf_buf[printf_ptr++] = (char)va_arg(args, int);
