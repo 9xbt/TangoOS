@@ -36,7 +36,6 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     kbd_install();
     pit_install();
     ata_install();
-
     ext2_init();
 
     /*int arr[4];
