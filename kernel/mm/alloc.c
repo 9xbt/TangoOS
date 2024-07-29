@@ -6,7 +6,6 @@ struct heap *kernel_heap;
 
 void alloc_init() {
     kernel_heap = heap_create();
-    printf("heap: created kernel heap\n");
 }
 
 void *kmalloc(size_t n) {

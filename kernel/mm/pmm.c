@@ -21,7 +21,7 @@ uint32_t pmm_bitmap_size = 0;
  */
 void pmm_install(struct multiboot_info_t *mbd) {
     dprintf("\033[92m * \033[0minitializing allocator... ");
-    printf("\n");
+    dprintf("\n");
 
     /* Check bit 6 to see if we have a valid memory map */
     if(!(mbd->flags >> 6 & 0x1)) {
@@ -41,7 +41,7 @@ void pmm_install(struct multiboot_info_t *mbd) {
         struct multiboot_memory_map_t* mmmt = 
             (struct multiboot_memory_map_t*) (mbd->mmap_addr + i);
 
-        printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+        dprintf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
             mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type);
 
         if (mmmt->type == MULTIBOOT_MEMORY_AVAILABLE) {
@@ -86,12 +86,12 @@ void pmm_install(struct multiboot_info_t *mbd) {
         }
     }
 
-    printf("Displaying kernel memory map entry below:\n\n");
+    dprintf("Displaying kernel memory map entry below:\n\n");
 
-    printf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
+    dprintf("Start Addr: %x | Length: %x | Size: %x | Type: %d\n",
         kernel_mmmt->addr_low, kernel_mmmt->len_low, kernel_mmmt->size, kernel_mmmt->type);
 
-    printf("PMM bitmap address: 0x%x\n", (uint32_t)pmm_bitmap);
+    dprintf("PMM bitmap address: 0x%x\n", (uint32_t)pmm_bitmap);
 
     alloc_init();
     dprintf("\033[94m[\033[92mok\033[94m]\033[0m\n");
@@ -135,7 +135,7 @@ void *pmm_alloc(size_t page_count) {
         pages = pmm_find_pages(page_count);
     }
     uint32_t phys_addr = pages * PAGE_SIZE;
-    printf("pmm: allocated %d pages at 0x%x\n", page_count, phys_addr);
+    dprintf("pmm: allocated %d pages at 0x%x\n", page_count, phys_addr);
     return (void*)(phys_addr);
 }
 
@@ -144,7 +144,7 @@ void pmm_free(void *ptr, size_t page_count) {
     for (uint32_t i = 0; i < page_count; i++) {
         bitmap_clear(pmm_bitmap, page + i);
     }
-    printf("pmm: freed %d pages at 0x%x\n", page_count, (uint32_t)ptr);
+    dprintf("pmm: freed %d pages at 0x%x\n", page_count, (uint32_t)ptr);
 }
 
 uint32_t pmm_get_total_mem() {

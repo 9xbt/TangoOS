@@ -28,11 +28,16 @@ void parse_num(uint32_t val, uint32_t base) {
 /*
  * parse_hex - parses hex
  */
-void parse_hex(uint32_t val) {
+void parse_hex(uint32_t val, int digits) {
     int i = 8;
+    int leading_zeroes = 1;
     while (i-- > 0) {
-        printf_buf[printf_ptr++] = "0123456789abcdef"[val >> (i * 4) & 0x0F];
+        char digit = "0123456789abcdef"[val >> (i * 4) & 0x0F];
+        if (digit != '0') leading_zeroes = 0;
+        if (!leading_zeroes || i <= digits) printf_buf[printf_ptr++] = digit;
     }
+    // Ensure there's a null terminator in the buffer
+    printf_buf[printf_ptr] = '\0';
 }
 
 /*
@@ -54,19 +59,26 @@ int vprintf(const char *fmt, va_list args) {
     while (*fmt) {
         if (*fmt == '%') {
             fmt++;
-            switch (*fmt) {
-                case 'd':
-                    parse_num(va_arg(args, int), 10);
-                    break;
-                case 'x':
-                    parse_hex(va_arg(args, uint32_t));
-                    break;
-                case 's':
-                    parse_string(va_arg(args, char *));
-                    break;
-                case 'c':
-                    printf_buf[printf_ptr++] = (char)va_arg(args, int);
-                    break;
+
+            if (*fmt >= '0' && *fmt <= '9') {
+                int digits = *fmt - '0' - 1;
+                fmt++;
+                parse_hex(va_arg(args, uint32_t), digits);
+            } else {
+                switch (*fmt) {
+                    case 'd':
+                        parse_num(va_arg(args, int), 10);
+                        break;
+                    case 'x':
+                        parse_hex(va_arg(args, uint32_t), 7);
+                        break;
+                    case 's':
+                        parse_string(va_arg(args, char *));
+                        break;
+                    case 'c':
+                        printf_buf[printf_ptr++] = (char)va_arg(args, int);
+                        break;
+                }
             }
         } else {
             printf_buf[printf_ptr++] = *fmt;

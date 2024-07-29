@@ -14,7 +14,7 @@ struct heap *heap_create() {
     h->head->used = true;
     h->head->magic = HEAP_MAGIC;
 
-    printf("heap: created heap of size %d at address 0x%x\n", h->head->size, (uint32_t)h);
+    dprintf("heap: created heap at address 0x%x\n", h->head->size, (uint32_t)h);
     return h;
 }
 
@@ -29,7 +29,7 @@ void *heap_alloc(struct heap *h, uint32_t n) {
     block->used = true;
     block->magic = HEAP_MAGIC;
 
-    printf("heap: allocated %d bytes at address %x\n", n, (uint32_t)block);
+    dprintf("heap: allocated %d bytes at address %x\n", n, (uint32_t)block);
     return (void*)block + sizeof(struct heap_block);
 }
 
@@ -46,6 +46,6 @@ void heap_free(void *ptr) {
     block->next->prev = block->prev;
     uint32_t pages = DIV_CEILING(sizeof(struct heap_block) + block->size, PAGE_SIZE);
 
-    printf("heap: freed %d bytes at address %x\n", block->size, (uint32_t)block);
+    dprintf("heap: freed %d bytes at address %x\n", block->size, (uint32_t)block);
     pmm_free(block, pages);
 }
