@@ -14,6 +14,9 @@
 #include <cpu/tables/gdt.h>
 #include <cpu/tables/idt.h>
 
+/*
+ * _main - kernel entry point
+ */
 void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     #ifdef BLINDMODE
     vga_puts("\033[107m\033[30m");
@@ -37,8 +40,6 @@ void _main(struct multiboot_info_t *mboot_info, uint32_t mboot_magic) {
     pit_install();
     ata_install();
     ext2_init();
-
-    printf("\n");
 
     shell_entry();
 }

@@ -21,6 +21,8 @@
 #define ATA_NO_DRIVES       0x01
 #define ATA_DISK_ERR        0x02
 
+extern char ata_drive_name[];
+
 void ata_install(void);
 uint8_t ata_read(uint32_t lba, uint8_t *buffer, uint32_t sectors);
 uint8_t ata_write(uint32_t lba, uint8_t *buffer, uint32_t sectors);

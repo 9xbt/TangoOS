@@ -96,6 +96,9 @@ void pmm_install(struct multiboot_info_t *mbd) {
     dprintf("\033[94m[\033[92mok\033[94m]\033[0m\n");
 }
 
+/*
+ * pmm_find_pages - finds page_count pages.
+ */
 uint32_t pmm_find_pages(uint32_t page_count) {
     uint32_t pages = 0;
     uint32_t first_page = pmm_last_page;
@@ -127,6 +130,9 @@ uint32_t pmm_find_pages(uint32_t page_count) {
     return 0;
 }
 
+/*
+ * pmm_alloc - allocates memory
+ */
 void *pmm_alloc(size_t page_count) {
     uint32_t pages = pmm_find_pages(page_count);
     if (pages == 0) {
@@ -138,6 +144,9 @@ void *pmm_alloc(size_t page_count) {
     return (void*)(phys_addr);
 }
 
+/*
+ * pmm_free - frees memory
+ */
 void pmm_free(void *ptr, size_t page_count) {
     uint32_t page = (uint32_t)ptr / PAGE_SIZE;
     for (uint32_t i = 0; i < page_count; i++) {
@@ -146,15 +155,24 @@ void pmm_free(void *ptr, size_t page_count) {
     dprintf("pmm: freed %d %s at 0x%x\n", page_count, page_count == 1 ? "page" : "pages", (uint32_t)ptr);
 }
 
+/*
+ * pmm_get_total_mem - gets the entire amount of memory
+ */
 uint32_t pmm_get_total_mem() {
     uint32_t total_bytes = pmm_bitmap_size * PAGE_SIZE * 8;
     return total_bytes;
 }
 
+/*
+ * pmm_get_usable_mem - gets the amount of usable memory
+ */
 uint32_t pmm_get_usable_mem() {
     return pmm_usable_mem;
 }
 
+/*
+ * pmm_get_used_mem - gets the amount of used memory
+ */
 uint32_t pmm_get_used_mem() {
     uint32_t used_bytes = 0;
 

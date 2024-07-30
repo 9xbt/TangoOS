@@ -232,6 +232,7 @@ int shell_loop(int val) {
 void shell_entry(void) {
     char defaultPrompt[] = "\033[91m# ";
     memcpy(shell_prompt, defaultPrompt, sizeof(defaultPrompt));
+    printf("\n");
     
     int ret = 0;
     for (;;) { 

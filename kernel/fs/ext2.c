@@ -26,7 +26,7 @@ struct ext2_fs *root_fs = NULL;
  * ext2_read_block - reads a block from the partition.
  */
 void ext2_read_block(struct ext2_fs *fs, uint32_t block, void *buffer) {
-    ata_read(block * (fs->block_size / 512), buffer, (fs->block_size / 512));
+    ata_read(block * (fs->block_size / 512), buffer, fs->block_size / 512);
 }
 
 /*
@@ -51,10 +51,14 @@ uint8_t ext2_init(void) {
     }
     kfree(buf);
 
-    root_fs = (struct ext2_fs *)kmalloc(sizeof(struct ext2_fs));
-    root_fs->sb = sb;
-    root_fs->block_size = 1024 << sb->log2_block;
-    root_fs->inode_size = sb->inode_size;
+    struct ext2_fs *fs = (struct ext2_fs *)kmalloc(sizeof(struct ext2_fs));
+    root_fs = fs;
+    fs->sb = sb;
+    fs->block_size = 1024 << sb->log2_block;
+    fs->bgd_count = sb->blocks / sb->blocks_per_group;
+    fs->bgd_block = sb->block_num + 1;
+    fs->bgd_table = (struct ext2_bgd *)kmalloc(sizeof(struct ext2_bgd) * fs->bgd_count);
+    ext2_read_block(fs, fs->bgd_block, fs->bgd_table);
 
     /* base superblock fields */
     dprintf("ext2: inodes: %d\n", sb->inodes);
@@ -63,7 +67,7 @@ uint8_t ext2_init(void) {
     dprintf("ext2: free blocks: %d\n", sb->free_blocks);
     dprintf("ext2: free inodes: %d\n", sb->free_inodes);
     dprintf("ext2: starting block: %d\n", sb->block_num);
-    dprintf("ext2: block size: %d\n", root_fs->block_size);
+    dprintf("ext2: block size: %d\n", 1024 << sb->log2_block);
     dprintf("ext2: fragment size: %d\n", 1024 << sb->log2_fragment);
     dprintf("ext2: blocks per group: %d\n", sb->blocks_per_group);
     dprintf("ext2: fragments per group: %d\n", sb->fragments_per_group);
@@ -101,10 +105,10 @@ uint8_t ext2_init(void) {
         (sb->required_features & 0x2) ? "64-bit, " : "",
         (sb->required_features & 0x4) ? "binary tree dir contents" : "");
     dprintf("ext2: filesystem uuid: %2x%2x%2x%2x-%2x%2x-%2x%2x-%2x%2x-%2x%2x%2x%2x%2x%2x\n",
-        sb->fs_uuid[0],  sb->fs_uuid[1],  sb->fs_uuid[2],  sb->fs_uuid[3],
-        sb->fs_uuid[4],  sb->fs_uuid[5],  sb->fs_uuid[6],  sb->fs_uuid[7],
-        sb->fs_uuid[8],  sb->fs_uuid[9],  sb->fs_uuid[10], sb->fs_uuid[11],
-        sb->fs_uuid[12], sb->fs_uuid[13], sb->fs_uuid[14], sb->fs_uuid[15]);
+        sb->fs_id[0],  sb->fs_id[1],  sb->fs_id[2],  sb->fs_id[3],
+        sb->fs_id[4],  sb->fs_id[5],  sb->fs_id[6],  sb->fs_id[7],
+        sb->fs_id[8],  sb->fs_id[9],  sb->fs_id[10], sb->fs_id[11],
+        sb->fs_id[12], sb->fs_id[13], sb->fs_id[14], sb->fs_id[15]);
     dprintf("ext2: volume label: %s\n", sb->vol_name);
     dprintf("ext2: last mount point: %s\n", sb->last_mount_point);
     dprintf("ext2: compression algorithms used: %x\n", sb->compression_algorithms_used);
@@ -118,8 +122,6 @@ uint8_t ext2_init(void) {
     dprintf("ext2: journal inode: %d\n", sb->journal_inode);
     dprintf("ext2: journal device: %d\n", sb->journal_device);
     dprintf("ext2: head of oprphan inode list: %d\n", sb->head_of_oprphan_inode_list);
-
-    /* TODO: test ext2_read_block */
 
     dprintf("\033[94m[\033[92mok\033[94m]\033[0m\n");
     return 0;

@@ -65,7 +65,9 @@ iso:
 fs:
 	@printf "\e[1A FS bin/fs.hdd\n"
 	@dd if=/dev/zero of=bin/fs.hdd bs=1M count=64 status=none
-	@mkfs.ext2 bin/fs.hdd -L tangoOS
+	
+	@# respectfully, shut the fuck up
+	@mkfs.ext2 bin/fs.hdd -L tangoOS 2>&1 >/dev/null | grep -v mke2fs | cat
 
 clean:
 	@rm -f $(BOOT_OBJS) $(KERNEL_OBJS)

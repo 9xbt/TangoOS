@@ -4,6 +4,9 @@
 #include <lib/libc.h>
 #include <lib/printf.h>
 
+/*
+ * heap_create - creates heap.
+ */
 __attribute__((no_sanitize("undefined")))
 struct heap *heap_create() {
     struct heap *h = (struct heap *)pmm_alloc(1);
@@ -18,6 +21,9 @@ struct heap *heap_create() {
     return h;
 }
 
+/*
+ * heap_alloc - allocates from the heap.
+ */
 __attribute__((no_sanitize("undefined")))
 void *heap_alloc(struct heap *h, uint32_t n) {
     uint32_t pages = DIV_CEILING(sizeof(struct heap_block) + n, PAGE_SIZE);
@@ -33,6 +39,9 @@ void *heap_alloc(struct heap *h, uint32_t n) {
     return (void*)block + sizeof(struct heap_block);
 }
 
+/*
+ * heap_free - frees alloc'd memory.
+ */
 __attribute__((no_sanitize("undefined")))
 void heap_free(void *ptr) {
     struct heap_block *block = (struct heap_block *)(ptr - sizeof(struct heap_block));

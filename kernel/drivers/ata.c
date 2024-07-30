@@ -5,7 +5,7 @@
 
 uint16_t ata_base;
 uint8_t ata_type;
-char ata_drive_name[40];
+char ata_drive_name[41];
 
 /*
  * ata_400ns - reads the status register enough times for a 400ns delay to ensure proper data
