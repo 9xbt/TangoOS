@@ -29,6 +29,19 @@ void ext2_read_block(struct ext2_fs *fs, uint32_t block, void *buffer) {
     ata_read(block * (fs->block_size / 512), buffer, fs->block_size / 512);
 }
 
+void ext2_read_inode(struct ext2_fs *fs, uint32_t inode_no, struct ext2_inode *inode) {
+    uint32_t i = inode_no - 1;
+    uint32_t block_group = i / fs->sb->inodes_per_group;
+    uint32_t idx = i % fs->sb->inodes_per_group;
+    uint32_t block_group_idx = idx * fs->inode_size / fs->block_size;
+    uint32_t inodes_per_block = fs->block_size / fs->inode_size;
+
+    uint8_t *buffer = kmalloc(fs->block_size);
+    ext2_read_block(fs, fs->bgd_table[block_group].inode_table + block_group_idx, buffer);
+    memcpy(inode, buffer + idx % inodes_per_block * fs->inode_size, fs->inode_size);
+    kfree(buffer);
+}
+
 /*
  * ext2_init - inits the ext2 driver.
  */
@@ -58,6 +71,7 @@ uint8_t ext2_init(void) {
     fs->bgd_count = sb->blocks / sb->blocks_per_group;
     fs->bgd_block = sb->block_num + 1;
     fs->bgd_table = (struct ext2_bgd *)kmalloc(sizeof(struct ext2_bgd) * fs->bgd_count);
+    fs->inode_size = sb->major_ver == 1 ? sb->inode_size : fs->inode_size;
     ext2_read_block(fs, fs->bgd_block, fs->bgd_table);
 
     /* base superblock fields */
@@ -122,6 +136,25 @@ uint8_t ext2_init(void) {
     dprintf("ext2: journal inode: %d\n", sb->journal_inode);
     dprintf("ext2: journal device: %d\n", sb->journal_device);
     dprintf("ext2: head of oprphan inode list: %d\n", sb->head_of_oprphan_inode_list);
+
+    struct ext2_inode *root_inode = (struct ext2_inode *)kmalloc(fs->inode_size);
+    ext2_read_inode(fs, 2, root_inode); /* 2 is the root inode */
+
+    dprintf("ext2: root inode type and permissions: %d\n", root_inode->type_permissions);
+    dprintf("ext2: root inode user id: %x\n", root_inode->user_id);
+    dprintf("ext2: root inode size: %d\n", root_inode->size);
+    dprintf("ext2: root inode last access time: %d\n", root_inode->last_access_time);
+    dprintf("ext2: root inode creation time: %d\n", root_inode->creation_time);
+    dprintf("ext2: root inode last modify time: %d\n", root_inode->last_modify_time);
+    dprintf("ext2: root inode deletion time: %d\n", root_inode->deletion_time);
+    dprintf("ext2: root inode group id: %x\n", root_inode->group_id);
+    dprintf("ext2: root inode hard links: %d\n", root_inode->hard_links);
+    dprintf("ext2: root inode sector count: %d\n", root_inode->sectors);
+    dprintf("ext2: root inode flags: %x\n", root_inode->flags);
+    dprintf("ext2: root inode generation: %x\n", root_inode->generation);
+    dprintf("ext2: root inode file acl: %x\n", root_inode->file_acl);
+    dprintf("ext2: root inode directory acl: %x\n", root_inode->dir_acl);
+    dprintf("ext2: root inode fragment address: %x\n", root_inode->fragment_addr);
 
     dprintf("\033[94m[\033[92mok\033[94m]\033[0m\n");
     return 0;

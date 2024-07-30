@@ -59,9 +59,6 @@ struct ext2_bgd {
     uint8_t  unused[14];
 };
 
-// finally we're doing ext2 stuff, i n o d e s
-// inode_modules
-// lmao
 struct ext2_inode {
     uint16_t type_permissions;
     uint16_t user_id;
